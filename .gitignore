@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# Debug files
+*.dSYM
+
+# emacs files
+.emacs.desktop
+.emacs.desktop.lock
