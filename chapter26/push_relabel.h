@@ -20,12 +20,12 @@ public:
 	  _residual_network[i].resize(vertice_count);
 	}
   }
-  int exec();
+  int Exec();
 private:  
   void InitializePreflow();
   void Push(int u, int v);
   void Relabel(int u);
-  int capacity(int u, int v);
+  int Capacity(int u, int v);
   
 private:
   std::vector<Node *> _nodes;
