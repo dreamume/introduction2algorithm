@@ -30,6 +30,46 @@ std::vector<std::complex<double>> recursiveFFT(std::vector<double>& a) {
     return res;
 }
 
+std::vector<std::complex<double>> iterativeFFT(std::vector<double>& a) {
+    std::vector<std::complex<double>> res(a.size(), std::complex<double>(0, 0));
+    int bits = log2(a.size());
+    for (int i = 0; i < a.size(); ++i) {
+        int start = 0;
+        int end = bits - 1;
+        int index = i;
+        while (start < end) {
+            if (((i & (0x1 << start)) > 0) ^ ((i & (0x1 << end)) > 0)) {
+                int reverse = (0x1 << start) + (0x1 << end);
+                index ^= reverse;
+            }
+            ++start;
+            --end;
+        }
+        res[i] = std::complex<double>(a[index], 0);
+    }
+
+    double PI = std::acos(-1);
+    for (int i = 1; i <= bits; ++i) {
+        int m = pow(2, i);
+        std::complex<double> wn(0, 2);
+        wn *= PI / m;
+        wn = std::exp(wn);
+        
+        for (int k = 0; k < a.size(); k += m) {
+            std::complex<double> w(1, 0);
+            for (int j = 0; j < m / 2; ++j) {
+                std::complex<double> t = w * res[k + j + m / 2];
+                std::complex<double> u = res[k + j];
+                res[k + j] = u + t;
+                res[k + j + m / 2] = u - t;
+                w = w * wn;
+            }
+        }
+    }
+
+    return res;
+}
+
 #if Debug
 
 #include <iostream>
@@ -42,6 +82,8 @@ int main(int argc, char *argv[]) {
 
     std::vector<std::complex<double>> y0 = recursiveFFT(a);
     std::vector<std::complex<double>> y1 = recursiveFFT(b);
+    // std::vector<std::complex<double>> y0 = iterativeFFT(a);
+    // std::vector<std::complex<double>> y1 = iterativeFFT(b);
     std::vector<std::complex<double>> y;
     for (int i = 0; i < y0.size(); ++i) y.push_back(y0[i] * y1[i]);
     std::complex<double> w(1, 0);
