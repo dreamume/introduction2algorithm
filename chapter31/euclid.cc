@@ -3,6 +3,7 @@
 #include "euclid.h"
 
 #include <cstdio>
+#include <vector>
 
 void CEuclid::extended_euclid(int a, int b) {
   if (b == 0) {
@@ -32,6 +33,27 @@ void CEuclid::modular_linear_equatiion_solver(int a, int b, int n) {
   }
 }
 
+int CEuclid::modular_exponentiation(int a, int b, int n) {
+  int c = 0;
+  int d = 1;
+  std::vector<bool> bits;
+  for (int i = 0; i <= 32; ++i) {
+    if (((long long)1 << i) <= b) bits.push_back((long long)b & ((long long)1 << i));
+    else break;
+  }
+
+  for (int i = bits.size() - 1; i >= 0; --i) {
+    c = 2 * c;
+    d = (d * d) % n;
+    if (bits[i]) {
+      c = c + 1;
+      d = (d * a) % n;
+    }
+  }
+
+  return d;
+}
+
 #if Debug
 int main(int argc, char *argv[]) {
   CEuclid euclid;
@@ -39,6 +61,8 @@ int main(int argc, char *argv[]) {
   // printf("d is %d, x is %d, y is %d, ax + by = %d\n", 
   //        euclid.d(), euclid.x(), euclid.y(), 899 * euclid.x() + 493 * euclid.y());
   euclid.modular_linear_equatiion_solver(14, 30, 100);
+  printf("module exponentiation a is 7, b is 560, n = 561, result is %d\n",
+         euclid.modular_exponentiation(7, 560, 561));
   
   return 0;
 }
