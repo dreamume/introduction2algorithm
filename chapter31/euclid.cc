@@ -54,6 +54,20 @@ int CEuclid::modular_exponentiation(int a, int b, int n) {
   return d;
 }
 
+int CEuclid::modular_exponentiation2(int a, int b, int n) {
+  int e = a % n;
+  int d = 1;
+
+  int index = 0;
+  while ((1ULL << index) <= b) {
+    if ((0x1 << index) & b) d = (d * e) % n;
+    e = (e * e) % n;
+    ++index;
+  }
+
+  return d;
+}
+
 #if Debug
 int main(int argc, char *argv[]) {
   CEuclid euclid;
@@ -62,7 +76,7 @@ int main(int argc, char *argv[]) {
   //        euclid.d(), euclid.x(), euclid.y(), 899 * euclid.x() + 493 * euclid.y());
   euclid.modular_linear_equatiion_solver(14, 30, 100);
   printf("module exponentiation a is 7, b is 560, n = 561, result is %d\n",
-         euclid.modular_exponentiation(7, 560, 561));
+         euclid.modular_exponentiation2(7, 560, 561));
   
   return 0;
 }
