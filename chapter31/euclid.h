@@ -5,6 +5,7 @@ class CEuclid {
   void modular_linear_equatiion_solver(int a, int b, int n);
   int modular_exponentiation(int a, int b, int n);
   int modular_exponentiation2(int a, int b, int n);
+  int gcd(int a, int b);
   int x() { return x_; }
   int y() { return y_; }
   int d() { return d_; }

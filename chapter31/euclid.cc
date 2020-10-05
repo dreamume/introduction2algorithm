@@ -68,15 +68,26 @@ int CEuclid::modular_exponentiation2(int a, int b, int n) {
   return d;
 }
 
+int CEuclid::gcd(int a, int b) {
+  if (a < b) std::swap(a, b);
+  if (a == b) return a;
+  if (((a & 0x1) == 0) && ((b & 0x1) == 0)) return 2 * gcd(a / 2, b / 2);
+  if ((a & 0x1) == 0) return gcd(a / 2, b);
+  if ((b & 0x1) == 0) return gcd(a, b / 2);
+
+  return gcd((a - b) / 2, b);
+}
+
 #if Debug
 int main(int argc, char *argv[]) {
   CEuclid euclid;
-  //euclid.extended_euclid(899, 493);
+  // euclid.extended_euclid(899, 493);
   // printf("d is %d, x is %d, y is %d, ax + by = %d\n", 
   //        euclid.d(), euclid.x(), euclid.y(), 899 * euclid.x() + 493 * euclid.y());
   euclid.modular_linear_equatiion_solver(14, 30, 100);
   printf("module exponentiation a is 7, b is 560, n = 561, result is %d\n",
          euclid.modular_exponentiation2(7, 560, 561));
+  printf("gcd(%d, %d) = %d\n", 899, 493, euclid.gcd(899, 493));
   
   return 0;
 }
