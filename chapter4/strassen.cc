@@ -7,8 +7,8 @@
 using std::vector;
 using std::max;
 
-vector<vector<int>> Strassen::compute(const vector<vector<int>>& a, 
-                                      const vector<vector<int>>& b) {
+template <typename T> vector<vector<T>> Strassen<T>::compute(const vector<vector<T>>& a, 
+                                                             const vector<vector<T>>& b) {
     assert(a.size() == b.size() && a[0].size() == b[0].size());
 
     int row = a.size();
@@ -22,16 +22,16 @@ vector<vector<int>> Strassen::compute(const vector<vector<int>>& a,
         return computeInternal(a, b);
     } else {
         int new_len = max(new_row, new_col);
-        vector<vector<int>> adapt_a(new_len, vector<int>(new_len, 0));
-        vector<vector<int>> adapt_b(new_len, vector<int>(new_len, 0));
+        vector<vector<T>> adapt_a(new_len, vector<T>(new_len, 0));
+        vector<vector<T>> adapt_b(new_len, vector<T>(new_len, 0));
         for (int i = 0; i < row; ++i) {
             for (int j = 0; j < col; ++j) {
                 adapt_a[i][j] = a[i][j];
                 adapt_b[i][j] = b[i][j];
             }
         }
-        vector<vector<int>> m = computeInternal(adapt_a, adapt_b);
-        vector<vector<int>> res(row, vector<int>(col));
+        vector<vector<T>> m = computeInternal(adapt_a, adapt_b);
+        vector<vector<T>> res(row, vector<T>(col));
         for (int i = 0; i < row; ++i) {
             for (int j = 0; j < col; ++j) {
                 res[i][j] = m[i][j];
@@ -42,7 +42,7 @@ vector<vector<int>> Strassen::compute(const vector<vector<int>>& a,
     }
 }
 
-void add(const vector<vector<int>>& a, const vector<vector<int>>& b, vector<vector<int>>& res) {
+template <typename T> void add(const vector<vector<T>>& a, const vector<vector<T>>& b, vector<vector<T>>& res) {
     for (int i = 0; i < a.size(); ++i) {
         for (int j = 0; j < a[0].size(); ++j) {
             res[i][j] = a[i][j] + b[i][j];
@@ -50,7 +50,7 @@ void add(const vector<vector<int>>& a, const vector<vector<int>>& b, vector<vect
     }
 }
 
-void sub(const vector<vector<int>>& a, const vector<vector<int>>& b, vector<vector<int>>& res) {
+template <typename T> void sub(const vector<vector<T>>& a, const vector<vector<T>>& b, vector<vector<T>>& res) {
     for (int i = 0; i < a.size(); ++i) {
         for (int j = 0; j < a[0].size(); ++j) {
             res[i][j] = a[i][j] - b[i][j];
@@ -58,38 +58,38 @@ void sub(const vector<vector<int>>& a, const vector<vector<int>>& b, vector<vect
     }
 }
 
-vector<vector<int>> Strassen::computeInternal(const vector<vector<int>>& a, 
-                                              const vector<vector<int>>& b) {
-    vector<vector<int>> res(a.size(), vector<int>(a.size(), 0));
+template <typename T> vector<vector<T>> Strassen<T>::computeInternal(const vector<vector<T>>& a, 
+                                                                     const vector<vector<T>>& b) {
+    vector<vector<T>> res(a.size(), vector<T>(a.size(), 0));
     if (a.size() == 1) {
         res[0][0] = a[0][0] * b[0][0];
     } else {
         int half = a.size() >> 1;
-        vector<int> half_vec(half, 0);
-        vector<vector<int>> c11(half, half_vec);
-        vector<vector<int>> c12(half, half_vec);
-        vector<vector<int>> c21(half, half_vec);
-        vector<vector<int>> c22(half, half_vec);
+        vector<T> half_vec(half, 0);
+        vector<vector<T>> c11(half, half_vec);
+        vector<vector<T>> c12(half, half_vec);
+        vector<vector<T>> c21(half, half_vec);
+        vector<vector<T>> c22(half, half_vec);
 
-        vector<vector<int>> s1(half, half_vec);
-        vector<vector<int>> s2(half, half_vec);
-        vector<vector<int>> s3(half, half_vec);
-        vector<vector<int>> s4(half, half_vec);
-        vector<vector<int>> s5(half, half_vec);
-        vector<vector<int>> s6(half, half_vec);
-        vector<vector<int>> s7(half, half_vec);
-        vector<vector<int>> s8(half, half_vec);
-        vector<vector<int>> s9(half, half_vec);
-        vector<vector<int>> s10(half, half_vec);
+        vector<vector<T>> s1(half, half_vec);
+        vector<vector<T>> s2(half, half_vec);
+        vector<vector<T>> s3(half, half_vec);
+        vector<vector<T>> s4(half, half_vec);
+        vector<vector<T>> s5(half, half_vec);
+        vector<vector<T>> s6(half, half_vec);
+        vector<vector<T>> s7(half, half_vec);
+        vector<vector<T>> s8(half, half_vec);
+        vector<vector<T>> s9(half, half_vec);
+        vector<vector<T>> s10(half, half_vec);
         
-        vector<vector<int>> a11(half, half_vec);
-        vector<vector<int>> a12(half, half_vec);
-        vector<vector<int>> a21(half, half_vec);
-        vector<vector<int>> a22(half, half_vec);
-        vector<vector<int>> b11(half, half_vec);
-        vector<vector<int>> b12(half, half_vec);
-        vector<vector<int>> b21(half, half_vec);
-        vector<vector<int>> b22(half, half_vec);
+        vector<vector<T>> a11(half, half_vec);
+        vector<vector<T>> a12(half, half_vec);
+        vector<vector<T>> a21(half, half_vec);
+        vector<vector<T>> a22(half, half_vec);
+        vector<vector<T>> b11(half, half_vec);
+        vector<vector<T>> b12(half, half_vec);
+        vector<vector<T>> b21(half, half_vec);
+        vector<vector<T>> b22(half, half_vec);
 
         for (int i = 0; i < half; ++i) {
             for (int j = 0; j < half; ++j) {
@@ -104,33 +104,33 @@ vector<vector<int>> Strassen::computeInternal(const vector<vector<int>>& a,
             }
         }
 
-        sub(b12, b22, s1);
-        add(a11, a12, s2);
-        add(a21, a22, s3);
-        sub(b21, b11, s4);
-        add(a11, a22, s5);
-        add(b11, b22, s6);
-        sub(a12, a22, s7);
-        add(b21, b22, s8);
-        sub(a11, a21, s9);
-        add(b11, b12, s10);
+        sub<T>(b12, b22, s1);
+        add<T>(a11, a12, s2);
+        add<T>(a21, a22, s3);
+        sub<T>(b21, b11, s4);
+        add<T>(a11, a22, s5);
+        add<T>(b11, b22, s6);
+        sub<T>(a12, a22, s7);
+        add<T>(b21, b22, s8);
+        sub<T>(a11, a21, s9);
+        add<T>(b11, b12, s10);
 
-        vector<vector<int>> p1 = computeInternal(a11, s1);
-        vector<vector<int>> p2 = computeInternal(s2, b22);
-        vector<vector<int>> p3 = computeInternal(s3, b11);
-        vector<vector<int>> p4 = computeInternal(a22, s4);
-        vector<vector<int>> p5 = computeInternal(s5, s6);
-        vector<vector<int>> p6 = computeInternal(s7, s8);
-        vector<vector<int>> p7 = computeInternal(s9, s10);
+        vector<vector<T>> p1 = computeInternal(a11, s1);
+        vector<vector<T>> p2 = computeInternal(s2, b22);
+        vector<vector<T>> p3 = computeInternal(s3, b11);
+        vector<vector<T>> p4 = computeInternal(a22, s4);
+        vector<vector<T>> p5 = computeInternal(s5, s6);
+        vector<vector<T>> p6 = computeInternal(s7, s8);
+        vector<vector<T>> p7 = computeInternal(s9, s10);
 
-        add(p1, p2, c12);
-        add(p3, p4, c21);
-        add(p5, p4, c11);
-        sub(c11, p2, c11);
-        add(c11, p6, c11);
-        add(p5, p1, c22);
-        sub(c22, p3, c22);
-        sub(c22, p7, c22);
+        add<T>(p1, p2, c12);
+        add<T>(p3, p4, c21);
+        add<T>(p5, p4, c11);
+        sub<T>(c11, p2, c11);
+        add<T>(c11, p6, c11);
+        add<T>(p5, p1, c22);
+        sub<T>(c22, p3, c22);
+        sub<T>(c22, p7, c22);
         
         for (int i = 0; i < half; ++i) {
             for (int j = 0; j < half; ++j) {
@@ -147,7 +147,7 @@ vector<vector<int>> Strassen::computeInternal(const vector<vector<int>>& a,
 
 #ifdef Debug
 int main() {
-    Strassen s;
+    Strassen<int> s;
     vector<vector<int>> a = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
     vector<vector<int>> b = {{-1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
     // vector<vector<int>> a{{1,3}, {7,5}};
